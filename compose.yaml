@@ -1,6 +1,17 @@
 services:
+  nextapp:
+    container_name: nextapp
+    image: nextapp:latest
+    build:
+      context: ./frontend
+      dockerfile: next.Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - rustapp
   rustapp:
-    depends_on: [db]
     container_name: rustapp
     image: rustapp:latest
     build:
@@ -10,6 +21,8 @@ services:
         DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
     ports:
       - 8080:8080
+    depends_on:
+      - db
   db:
     container_name: db
     image: postgres:13
